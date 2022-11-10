@@ -1,5 +1,6 @@
 import requests
 import time
+from parsel import Selector
 
 
 # Requisito 1
@@ -8,16 +9,20 @@ def fetch(url):
     try:
         response = requests.get(url, headers={
           "user-agent": "Fake user-agent"}, timeout=3)
-        if response.status_code != 200:
-            return None
+        response.raise_for_status()
         return response.text
-    except requests.ReadTimeout:
+    except (requests.ReadTimeout, requests.HTTPError):
         return None
 
 
 # Requisito 2
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    news = []
+    for new in selector.css('div.archive-main'):
+        news = new.css("""article.entry-preview div.post-outer
+        div div div.cs-overlay a::attr(href)""").getall()
+    return news
 
 
 # Requisito 3
