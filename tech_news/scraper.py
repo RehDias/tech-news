@@ -1,5 +1,7 @@
 import requests
 import time
+import re
+import unicodedata
 from parsel import Selector
 
 
@@ -34,7 +36,23 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    seletor = Selector(html_content)
+    text = seletor.css('div.entry-content p/*').get()
+    REGEX = re.compile(r'<[^>]+>')
+    # https://stackoverflow.com/questions/9662346/python-code-to-remove-html-tags-from-a-string
+    about = {
+      "url": seletor.css('link[rel~="canonical"]::attr(href)').get(),
+      "title": unicodedata.normalize('NFKC', seletor.css('h1::text').get())
+      .strip(),
+      "timestamp": seletor.css('.meta-date::text').get(),
+      "writer": seletor.css('li.meta-author span.author *::text').get(),
+      "comments_count": len(seletor.css('ol.comment-list').getall()),
+      "summary": unicodedata.normalize('NFKC', REGEX.sub('', text)).strip(),
+      # https://stackoverflow.com/questions/10993612/how-to-remove-xa0-from-string-in-python
+      "tags": seletor.css('section.post-tags ul li a::text').getall(),
+      "category": seletor.css('div.meta-category span.label::text').get(),
+    }
+    return about
 
 
 # Requisito 5
