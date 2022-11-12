@@ -3,6 +3,7 @@ import time
 import re
 import unicodedata
 from parsel import Selector
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -57,4 +58,20 @@ def scrape_noticia(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    base_url = 'https://blog.betrybe.com/'
+    html_content = fetch(base_url)
+    links = scrape_novidades(html_content)
+    news_list = []
+    count = 0
+    for index in range(amount):
+        if count == len(links):
+            count = 0
+            next_page = scrape_next_page_link(html_content)
+            html_content = fetch(next_page)
+            links = scrape_novidades(html_content)
+        news_page = fetch(links[count])
+        news_content = scrape_noticia(news_page)
+        news_list.extend([news_content])
+        count += 1
+    create_news(news_list)
+    return news_list
