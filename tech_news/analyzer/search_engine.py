@@ -41,4 +41,11 @@ def search_by_tag(tag):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    news_by_category = db.search_news({
+      "category": {
+        "$regex": category,
+        "$options": "i"
+        }
+    })
+    tuple_news = [(new['title'], new['url']) for new in news_by_category]
+    return tuple_news
