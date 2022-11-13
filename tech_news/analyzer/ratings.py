@@ -11,4 +11,12 @@ def top_5_news():
 
 # Requisito 11
 def top_5_categories():
-    """Seu código deve vir aqui"""
+    news = db.find_news()
+    categories = [new['category'] for new in news]
+    cat_count = [
+     {"cat": category, "count": categories.count(
+      category)} for category in sorted(set(categories))]
+    sorted_categories = sorted(
+      cat_count, key=lambda cat: cat.get('count'), reverse=True)
+    top_five = [category['cat'] for category in sorted_categories]
+    return top_five[:5]
