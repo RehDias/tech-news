@@ -67,4 +67,5 @@ def six():
 
 def seven():
     print("Encerrando script")
+    sys.exit()
     SystemExit
