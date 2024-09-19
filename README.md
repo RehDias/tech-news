@@ -1,4 +1,4 @@
-# Tech News
+# Tech News <img src="https://github.com/user-attachments/assets/fb2ab78a-af42-47b8-9e6a-d7cd4ccece6f" alt="image" width="60"/>
 
 ## Sobre
 
